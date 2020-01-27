@@ -11,6 +11,7 @@ namespace WebApp1.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            //just for test
             return View();
         }
     }
