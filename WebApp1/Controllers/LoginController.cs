@@ -30,7 +30,7 @@ namespace WebApp1.Controllers
             string Conn = @"Data Source=(localdb)\MSSQLLocalDB; AttachDbFilename=" + serverpath + @";Integrated Security=True;Connect Timeout=30;";
 
             DataContext db = new DataContext(Conn);
-            var List = db.BusinessPartner.ToList();
+            var List = db.BusinessPartners.ToList();
             var IsUserExists = List.Where(x => x.LoginName == user.LoginName).SingleOrDefault();
             if (IsUserExists != null)
             {
