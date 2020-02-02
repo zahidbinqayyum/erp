@@ -1,0 +1,59 @@
+﻿@model WebApp1.Models.BusinessPartner
+
+@{
+    ViewBag.Title = "User Login";
+}
+
+<div class="form-horizontal">
+    <h4>Login Credentials</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.LoginName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.LoginName, new { htmlAttributes = new { @class = "form-control", @Value="admin" } })
+            @Html.ValidationMessageFor(model => model.LoginName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @Value="admin"  } })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" id="Create" value="Login" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#Create").click(function () {
+            var JqueryUser = {
+                "LoginName": $("#LoginName").val(),
+                "Password": $("#Password").val(),
+            }
+            $.ajax({
+                url: "/Login/UserLoginAjax",
+                type: "POST",
+                //contentType: "application/json",
+                //data: JSON.stringify(EmployeeObj),
+                data: JqueryUser,
+                //success: function () {},//Depricated
+                //fail: function () {} //Depricated
+            }).done(function (obj) {
+                window.location.href = obj;
+            }).fail(function (xhr) {
+                    alert(xhr.status);
+                    alert(xhr.message);
+                });
+
+        });
+    </script>
+}

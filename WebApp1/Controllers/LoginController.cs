@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebApp1.Models;
+using WebApp1.Utility;
 
 namespace WebApp1.Controllers
 {
@@ -22,16 +23,19 @@ namespace WebApp1.Controllers
             else
                 return View();
         }
-
+        public ActionResult AjaxLogin()
+        {
+            if (Session["User"] != null)
+                return RedirectToAction("Index", "Home");
+            else
+                return View();
+        }
         [HttpPost]
         public ActionResult UserLogin(BusinessPartner user)
         {
-            var serverpath = Server.MapPath(@"\App_Data\ERP.mdf");
-            string Conn = @"Data Source=(localdb)\MSSQLLocalDB; AttachDbFilename=" + serverpath + @";Integrated Security=True;Connect Timeout=30;";
-
-            DataContext db = new DataContext(Conn);
+            DataContext db = new DataContext();
             var List = db.BusinessPartners.ToList();
-            var IsUserExists = List.Where(x => x.LoginName == user.LoginName).SingleOrDefault();
+            var IsUserExists = List.Where(x => x.LoginName == user.LoginName && x.Password == user.Password).SingleOrDefault();
             if (IsUserExists != null)
             {
                 Session["User"] = IsUserExists.LoginName;
@@ -40,7 +44,34 @@ namespace WebApp1.Controllers
             else
                 return RedirectToAction("UserLogin", "Login");
         }
+        [HttpPost]
+        public string UserLoginAjax(BusinessPartner user)
+        {
+            try
+            {
+                DataContext db = new DataContext();
+                var List = db.BusinessPartners.ToList();
+                var IsUserExists = List.Where(x => x.LoginName == user.LoginName && x.Password == user.Password).SingleOrDefault();
+            if (IsUserExists != null)
+            {
+                Session["User"] = IsUserExists.LoginName;
+                return "/Home/Index";
+            }
+            else
+                return "/Login/AjaxLogin";
+            }
+            catch (Exception ex)
+            {
+                return "/Error.cshtml";
+            }
 
+        }
+        public ActionResult LogOut()
+        {
+            Session.Abandon();
+            Session.Clear();
+            return RedirectToAction("UserLogin", "Login");
+        }
 
     }
 }
