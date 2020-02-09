@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using DbFirst;
+using MVCWithSubmit.Db;
+
 namespace MVCWithSubmit.Controllers
 {
     public class LoginController : Controller
@@ -35,7 +36,7 @@ namespace MVCWithSubmit.Controllers
             //BusinessPartnerRepo repo = new BusinessPartnerRepo();
             //var List = repo.GetAllBusinessartner();
 
-            Entities db = new Entities();
+            ERPEntities db = new ERPEntities();
             var List = db.BusinessPartners.ToList();
             var IsUserExists = List.Where(x => x.LoginName == user.LoginName && x.Password == user.Password).SingleOrDefault();
             if (IsUserExists != null)
